@@ -24,10 +24,10 @@ export const SubDevice = ({ setAlert, device, datasource, subDevice, setSubDevic
           return r;
         },
         (response: any) => {
-          setAlert({
-            title: `SubDeviceOptions loading error:\n${response.status} - ${response.statusText}`,
-            severity: 'error',
-          });
+          let title = `SubDeviceOptions loading error:\n${response.status} - ${response.statusText}`;
+          title += `\ndevice_id: ${device_id}`;
+          let severity = 'error';
+          setAlert({ title: title, severity: severity });
           throw new Error(response.statusText);
         }
       );

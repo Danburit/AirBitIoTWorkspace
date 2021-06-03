@@ -39,10 +39,20 @@ export const QueryDeviceTriplet = ({ group, featuresSlug, setAlert, queryMode, d
           return result;
         },
         (response: any) => {
-          setAlert({
-            title: `DeviceByNet loading error:\n${response.status} - ${response.statusText}`,
-            severity: 'error',
-          });
+          let title = `DeviceByNet loading error:\n${response.status} - ${response.statusText}`;
+          title += `\nnet_id: ${net_id}`;
+          title += `\nnet_id_type_id: ${net_id_type_id}`;
+          if (useCompany && company_id !== undefined) {
+            title += `\ncompany_id: ${company_id}`;
+          }
+          if (group !== undefined) {
+            title += `\ngroup: ${group}`;
+          }
+          if (features_slug !== undefined) {
+            title += `\nfeatures_slug: ${features_slug}`;
+          }
+          let severity = 'error';
+          setAlert({ title: title, severity: severity });
           throw new Error(response.statusText);
         }
       );
@@ -53,12 +63,20 @@ export const QueryDeviceTriplet = ({ group, featuresSlug, setAlert, queryMode, d
     (net_id: string, net_id_type_id: number, company_id?: number, group?: number, features_slug?: number) => {
       loadDevice(net_id, net_id_type_id, company_id, group, features_slug).then((result) => {
         if (result?.id === undefined) {
-          setAlert({
-            title:
-              `Device:\nUnknown device:\nnetID: ${net_id}\ntypeNetID: ${net_id_type_id}\n` +
-              `${company_id !== undefined ? 'company: ' + company_id + '\n' : ''}`,
-            severity: 'warning',
-          });
+          let title = `Device:\nUnknown device:`;
+          title += `\nnetID: ${net_id}`;
+          title += `\ntypeNetID: ${net_id_type_id}`;
+          if (company_id !== undefined) {
+            title += `\ncompany: ${company_id}`;
+          }
+          if (group !== undefined) {
+            title += `\ngroup: ${group}`;
+          }
+          if (features_slug !== undefined) {
+            title += `\nfeatures_slug: ${features_slug}`;
+          }
+          let severity = 'warning';
+          setAlert({ title: title, severity: severity });
           return;
         }
         setDevice(result);
@@ -89,10 +107,9 @@ export const QueryDeviceTriplet = ({ group, featuresSlug, setAlert, queryMode, d
       },
       (response: any) => {
         setUseCompany(false);
-        setAlert({
-          title: `Checking using company error:\n${response.status} - ${response.statusText}`,
-          severity: 'error',
-        });
+        let title = `Checking using company error:\n${response.status} - ${response.statusText}`;
+        let severity = 'error';
+        setAlert({ title: title, severity: severity });
         throw new Error(response.statusText);
       }
     );

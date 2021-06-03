@@ -1,5 +1,6 @@
 import { Format } from './format';
 import React from 'react';
+import { findHoverIndexFromData } from '@grafana/ui/components/Graph/utils';
 
 export const QueryDeviceID = ({ group, featuresSlug, query, setAlert, queryMode, datasource, device, setDevice }) => {
   const [deviceID, setDeviceID] = React.useState<number | null>(query?.device ?? device?.id ?? null);
@@ -21,10 +22,16 @@ export const QueryDeviceID = ({ group, featuresSlug, query, setAlert, queryMode,
           return result;
         },
         (response: any) => {
-          setAlert({
-            title: `DeviceByID loading error:\n${response.status} - ${response.statusText}`,
-            severity: 'error',
-          });
+          let title = `DeviceByID loading error:\n${response.status} - ${response.statusText}`;
+          title += `\ndevice_id: ${device_id}`;
+          if (group !== undefined) {
+            title += `\ngroup: ${group}`;
+          }
+          if (features_slug !== undefined) {
+            title += `\nfeatures_slug: ${features_slug}`;
+          }
+          let severity = 'error';
+          setAlert({ title: title, severity: severity });
           throw new Error(response.statusText);
         }
       );
@@ -35,7 +42,16 @@ export const QueryDeviceID = ({ group, featuresSlug, query, setAlert, queryMode,
     (device_id: number, group?: number, features_slug?: number) => {
       loadDevice(device_id, group, features_slug).then((result) => {
         if (result?.id === undefined) {
-          setAlert({ title: `Device:\nUnknown device with id ${device_id}`, severity: 'warning' });
+          let title = `Device:\nUnknown device with:`;
+          title += `\nid: ${device_id}`;
+          if (group !== undefined) {
+            title += `\ngroup: ${group}`;
+          }
+          if (features_slug !== undefined) {
+            title += `\nfeatures_slug: ${features_slug}`;
+          }
+          let severity = 'warning';
+          setAlert({ title: title, severity: severity });
           return;
         }
         setDevice(result);

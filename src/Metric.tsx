@@ -34,10 +34,10 @@ export const Metric = ({ setAlert, datasource, device, subDevice, metrics, setMe
           return metrics;
         },
         (response: any) => {
-          setAlert({
-            title: `Device metrics loading error:\n${response.status} - ${response.statusText}`,
-            severity: 'error',
-          });
+          let title = `Device metrics loading error:\n${response.status} - ${response.statusText}`;
+          title += `\ndevice_id: ${device_id}`;
+          let severity = 'error';
+          setAlert({ title: title, severity: severity });
           throw new Error(response.statusText);
         }
       );
@@ -77,10 +77,11 @@ export const Metric = ({ setAlert, datasource, device, subDevice, metrics, setMe
           return metrics;
         },
         (response: any) => {
-          setAlert({
-            title: `SubDevice metrics loading error:\n${response.status} - ${response.statusText}`,
-            severity: 'error',
-          });
+          let title = `SubDevice metrics loading error:\n${response.status} - ${response.statusText}`;
+          title += `\ndevice_id: ${device_id}`;
+          title += `\nsubdevice_id:${subdevice_id}`;
+          let severity = 'error';
+          setAlert({ title: title, severity: severity });
           throw new Error(response.statusText);
         }
       );

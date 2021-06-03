@@ -54,7 +54,7 @@ export interface SubDeviceFindValue extends MetricFindValue {
 export interface GenericOptions extends DataSourceJsonData {}
 
 export interface FeatureSetFindValue extends MetricFindValue {
-  value: any;
+  value: string;
   text: string;
 }
 

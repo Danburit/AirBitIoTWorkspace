@@ -31,10 +31,10 @@ export const QueryDeviceTripletCompany = ({
           return result.map((value: CompanyFindValue) => ({ label: value.text, value: value.value }));
         },
         (response: any) => {
-          setAlert({
-            title: `CompanyOptions loading error:\n${response.status} - ${response.statusText}`,
-            severity: 'error',
-          });
+          let title = `CompanyOptions loading error:\n${response.status} - ${response.statusText}`;
+          title += `\ncompany_name: ${company_name}`;
+          let severity = 'error';
+          setAlert({ title: title, severity: severity });
           throw new Error(response.statusText);
         }
       );
@@ -71,10 +71,10 @@ export const QueryDeviceTripletCompany = ({
           return result.map((value: CompanyFindValue) => ({ label: value.text, value: value.value }));
         },
         (response: any) => {
-          setAlert({
-            title: `CompanyByID loading error:\n${response.status} - ${response.statusText}`,
-            severity: 'error',
-          });
+          let title = `CompanyByID loading error:\n${response.status} - ${response.statusText}`;
+          title += `\ncompany_id: ${company_id}`;
+          let severity = 'error';
+          setAlert({ title: title, severity: severity });
           throw new Error(response.statusText);
         }
       );

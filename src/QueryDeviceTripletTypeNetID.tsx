@@ -19,10 +19,9 @@ export const QueryDeviceTripletTypeNetID = ({ setAlert, queryMode, device, typeN
         return result.map((value) => ({ label: value.text, value: value.value }));
       },
       (response: any) => {
-        setAlert({
-          title: `TypeNetIDOptions loading error:\n${response.status} - ${response.statusText}`,
-          severity: 'error',
-        });
+        let title = `TypeNetIDOptions loading error:\n${response.status} - ${response.statusText}`;
+        let severity = 'error';
+        setAlert({ title: title, severity: severity });
         throw new Error(response.statusText);
       }
     );

@@ -113,6 +113,14 @@ export const QueryEditor: ComponentType<Props> = ({ datasource, onChange, onRunQ
       {/*  referenceElement={div}*/}
       {/*/>*/}
       {alertF()}
+      <Group query={query} setAlert={setAlert} datasource={datasource} group={group} setGroup={setGroup} />
+      <FeaturesSlug
+        setAlert={setAlert}
+        query={query}
+        datasource={datasource}
+        featuresSlug={featuresSlug}
+        setFeaturesSlug={setFeaturesSlug}
+      />
       <QueryMode queryMode={queryMode} setQueryMode={setQueryMode} />
       <QueryDeviceName
         setAlert={setAlert}
@@ -141,14 +149,6 @@ export const QueryEditor: ComponentType<Props> = ({ datasource, onChange, onRunQ
         datasource={datasource}
         device={device}
         setDevice={setDevice}
-      />
-      <Group query={query} setAlert={setAlert} datasource={datasource} group={group} setGroup={setGroup} />
-      <FeaturesSlug
-        setAlert={setAlert}
-        query={query}
-        datasource={datasource}
-        featuresSlug={featuresSlug}
-        setFeaturesSlug={setFeaturesSlug}
       />
       <SubDevice
         query={query}

@@ -31,10 +31,16 @@ export const QueryDeviceName = ({ setAlert, queryMode, group, featuresSlug, data
           return result.map((value) => ({ label: value.text, value: value.value }));
         },
         (response) => {
-          setAlert({
-            title: `DeviceByNameOptions loading error:\n${response.status} - ${response.statusText}`,
-            severity: 'error',
-          });
+          let title = `DeviceByNameOptions loading error:\n${response.status} - ${response.statusText}`;
+          title += `\ndevice_name: ${device_name}`;
+          if (group !== undefined) {
+            title += group;
+          }
+          if (features_slug !== undefined) {
+            title += features_slug;
+          }
+          let severity = 'error';
+          setAlert({ title: title, severity: severity });
           throw new Error(response.statusText);
         }
       );
@@ -70,10 +76,10 @@ export const QueryDeviceName = ({ setAlert, queryMode, group, featuresSlug, data
           return result;
         },
         (response: any) => {
-          setAlert({
-            title: `DeviceByID loading error:\n${response.status} - ${response.statusText}\ndevice_id: ${device_id}`,
-            severity: 'error',
-          });
+          let title = `DeviceByID loading error:\n${response.status} - ${response.statusText}`;
+          title += `\ndevice_id: ${device_id}`;
+          let severity = 'error';
+          setAlert({ title: title, severity: severity });
           throw new Error(response.statusText);
         }
       );
