@@ -55,10 +55,10 @@ export const Metric = ({ setAlert, datasource, device, subDevice, metrics, setMe
           setMetricOptionsIsLoading(false);
         });
     },
-    [loadDeviceMetricOptions, setMetrics, setDeviceMetricOptions]
+    [loadDeviceMetricOptions, setDeviceMetricOptions]
   );
   React.useEffect(() => {
-    if (device?.id === undefined || device.id === query?.device) {
+    if (device?.id === undefined) {
       return;
     }
     refreshDeviceMetricOptions(device.id);
@@ -99,10 +99,10 @@ export const Metric = ({ setAlert, datasource, device, subDevice, metrics, setMe
           setMetricOptionsIsLoading(false);
         });
     },
-    [loadSubDeviceMetricOptions, setMetrics, setSubDeviceMetricOptions, setMetricOptionsIsLoading]
+    [loadSubDeviceMetricOptions, setSubDeviceMetricOptions, setMetricOptionsIsLoading]
   );
   React.useEffect(() => {
-    if (device?.id === undefined || subDevice?.value === undefined || query?.subdevice === subDevice) {
+    if (device?.id === undefined || subDevice?.value === undefined) {
       return;
     }
     refreshSubDeviceMetricOptions(device.id, subDevice.value);
