@@ -1,5 +1,6 @@
 import { Format } from './format';
 import React from 'react';
+import { Input } from '@grafana/ui';
 
 export const QueryDeviceTripletNetID = ({ setAlert, queryMode, device, netID, setNetID }) => {
   const [netIDStr, setNetIDStr] = React.useState<string>(netID || '');
@@ -22,11 +23,10 @@ export const QueryDeviceTripletNetID = ({ setAlert, queryMode, device, netID, se
   }
   return (
     <div className="gf-form--grow">
-      <input
-        className="gf-form-input"
-        type="text"
+      <Input
         value={netIDStr}
         onChange={(v) => {
+          // @ts-ignore
           setNetIDStr(v.target.value);
         }}
         onBlur={() => {
@@ -34,6 +34,7 @@ export const QueryDeviceTripletNetID = ({ setAlert, queryMode, device, netID, se
             setNetID(netIDStr);
           }
         }}
+        prefix={'Net ID: '}
       />
     </div>
   );

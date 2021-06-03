@@ -1,6 +1,6 @@
 import { Format } from './format';
 import React from 'react';
-import { findHoverIndexFromData } from '@grafana/ui/components/Graph/utils';
+import { Input } from '@grafana/ui';
 
 export const QueryDeviceID = ({ group, featuresSlug, query, setAlert, queryMode, datasource, device, setDevice }) => {
   const [deviceID, setDeviceID] = React.useState<number | null>(query?.device ?? device?.id ?? null);
@@ -79,9 +79,7 @@ export const QueryDeviceID = ({ group, featuresSlug, query, setAlert, queryMode,
   }
   return (
     <div className="gf-form">
-      <input
-        className="gf-form-input"
-        type="text"
+      <Input
         value={deviceIDInput ?? ''}
         onBlur={() => {
           if (deviceIDInput !== null) {
@@ -89,14 +87,16 @@ export const QueryDeviceID = ({ group, featuresSlug, query, setAlert, queryMode,
           }
         }}
         onChange={(v) => {
-          v.target.value = v.target.value.replace(/\D/g, '');
           // @ts-ignore
-          if (v.target.value === '') {
+          let value = v.target.value;
+          value = value.replace(/\D/g, '');
+          if (value === '') {
             setDeviceIDInput(null);
           } else {
-            setDeviceIDInput(parseInt(v.target.value, 10));
+            setDeviceIDInput(parseInt(value, 10));
           }
         }}
+        prefix={'Device ID:'}
       />
     </div>
   );
