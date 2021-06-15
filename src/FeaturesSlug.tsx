@@ -45,7 +45,7 @@ export const FeaturesSlug = ({ setAlert, datasource, featuresSlug, setFeaturesSl
       <Select
         value={featuresSlug}
         options={featuresSlugOptions}
-        prefix="Features slug: "
+        prefix="Feature set: "
         placeholder=""
         onChange={(v) => {
           if (v === null) {
