@@ -12,6 +12,7 @@ This plugin based on [GrafanaJsonDatasource](https://github.com/simPod/GrafanaJs
 
 ## Before you start
 
+* compatible with Grafana version 7.5.7
 * plugin is unsigned 
 
 To make the plugin work, add the airbit-iot-ws-datasource id to the parameter allow_loading_unsigned_plugins in the grafana.ini configuration.
