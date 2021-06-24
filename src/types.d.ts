@@ -86,15 +86,3 @@ export interface MetricFindValue1 extends MetricFindValue {
   value: any;
   text: string;
 }
-
-export interface TextValuePair {
-  value: any;
-  text: string;
-}
-
-export interface MultiValueVariable extends VariableModel {
-  allValue: string | null;
-  id: string;
-  current: TextValuePair;
-  options: TextValuePair[];
-}

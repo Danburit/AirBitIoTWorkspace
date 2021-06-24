@@ -1,4 +1,4 @@
-import { Format } from './format';
+import { Format } from '../format';
 import React from 'react';
 import { Input } from '@grafana/ui';
 

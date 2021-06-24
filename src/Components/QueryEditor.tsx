@@ -1,18 +1,18 @@
 import { QueryEditorProps, SelectableValue } from '@grafana/data';
-import { Alert, Popover } from '@grafana/ui';
+import { Alert } from '@grafana/ui';
 import { Metric } from './Metric';
 import React, { ComponentType } from 'react';
-import { DataSource } from './DataSource';
-import { AlertValue, DeviceValue, GenericOptions, GrafanaQuery, LastQuery } from './types';
+import { DataSource } from '../DataSource';
+import { AlertValue, DeviceValue, GenericOptions, GrafanaQuery, LastQuery } from '../types';
 import { SubDevice } from './SubDevice';
-import { EmptySelectableValue, queryModeOptions } from './constance';
+import { EmptySelectableValue, queryModeOptions } from '../constance';
 import { QueryMode } from './QueryMode';
 import { QueryDeviceName } from './QueryDeviceName';
 import { QueryDeviceTriplet } from './QueryDeviceTriplet';
 import { QueryDeviceID } from './QueryDeviceID';
 import { Group } from './Group';
 import { FeaturesSlug } from './FeaturesSlug';
-import { Format } from './format';
+import { Format } from '../format';
 
 type Props = QueryEditorProps<DataSource, GrafanaQuery, GenericOptions>;
 
@@ -97,21 +97,6 @@ export const QueryEditor: ComponentType<Props> = ({ datasource, onChange, onRunQ
 
   return (
     <>
-      {/*<Popover*/}
-      {/*  show={true}*/}
-      {/*  content={() => (*/}
-      {/*    <QueryDeviceName*/}
-      {/*      setAlert={setAlert}*/}
-      {/*      queryMode={queryMode}*/}
-      {/*      group={group}*/}
-      {/*      featuresSlug={featuresSlug}*/}
-      {/*      device={device}*/}
-      {/*      datasource={datasource}*/}
-      {/*      setDevice={setDevice}*/}
-      {/*    />*/}
-      {/*  )}*/}
-      {/*  referenceElement={div}*/}
-      {/*/>*/}
       {alertF()}
       <Group query={query} setAlert={setAlert} datasource={datasource} group={group} setGroup={setGroup} />
       <FeaturesSlug

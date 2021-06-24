@@ -1,8 +1,8 @@
 {
     "name": "AirBit IoT Workspace",
-    "id": "airbit-iot-workspace",
+    "id": "airbit-iot-ws-datasource",
     "type": "datasource",
-    "annotations": true,
+    "annotations": false,
     "metrics": true,
     "logs": true,
     "info": {
@@ -12,13 +12,13 @@
         "description": "Load JSON data over HTTP backend",
         "keywords": ["json", "api"],
         "logos": {
-            "small": "img/logo.svg",
-            "large": "img/logo.svg"
+            "small": "img/logo-2.svg",
+            "large": "img/logo-2.svg"
         },
         "links": [
             {
                 "name": "GitHub",
-                "url": ""
+                "url": "https://github.com/Danburit/AirBitIoTWorkspace"
             }
         ],
         "version": "%VERSION%",

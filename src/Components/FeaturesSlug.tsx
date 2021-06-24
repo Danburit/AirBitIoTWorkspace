@@ -1,7 +1,7 @@
 import React from 'react';
 import { Select } from '@grafana/ui';
 import { SelectableValue } from '@grafana/data';
-import { EmptySelectableValue } from './constance';
+import { EmptySelectableValue } from '../constance';
 import { find } from 'lodash';
 
 export const FeaturesSlug = ({ setAlert, datasource, featuresSlug, setFeaturesSlug, query }) => {

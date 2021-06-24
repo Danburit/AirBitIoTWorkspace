@@ -1,9 +1,9 @@
-import { CompanyFindValue } from './types';
+import { CompanyFindValue } from '../types';
 import React from 'react';
 import { SelectableValue } from '@grafana/data';
-import { Select } from '@grafana/ui';
-import { Format } from './format';
-import { EmptySelectableValue } from './constance';
+import { InlineField, Select } from '@grafana/ui';
+import { Format } from '../format';
+import { EmptySelectableValue } from '../constance';
 
 export const QueryDeviceTripletCompany = ({
   setAlert,

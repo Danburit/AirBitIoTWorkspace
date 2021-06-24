@@ -1,10 +1,10 @@
-import { TypeNetIDValue } from './types';
+import { TypeNetIDValue } from '../types';
 import React from 'react';
 import { SelectableValue } from '@grafana/data';
-import { Select } from '@grafana/ui';
+import { InlineField, Select } from '@grafana/ui';
 import { find } from 'lodash';
-import { Format } from './format';
-import { EmptySelectableValue } from './constance';
+import { Format } from '../format';
+import { EmptySelectableValue } from '../constance';
 
 export const QueryDeviceTripletTypeNetID = ({ setAlert, queryMode, device, typeNetID, setTypeNetID, datasource }) => {
   const [typeNetIDOptions, setTypeNetIDOptions] = React.useState<Array<SelectableValue<number>>>([]);

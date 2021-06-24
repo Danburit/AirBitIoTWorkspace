@@ -1,5 +1,5 @@
 import { Select } from '@grafana/ui';
-import { queryModeOptions } from './constance';
+import { queryModeOptions } from '../constance';
 import React from 'react';
 
 export const QueryMode = ({ queryMode, setQueryMode }) => {

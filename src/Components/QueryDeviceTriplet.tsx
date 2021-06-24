@@ -1,11 +1,12 @@
-import { DeviceValue } from './types';
+import { DeviceValue } from '../types';
 import React from 'react';
 import { SelectableValue } from '@grafana/data';
 import { QueryDeviceTripletNetID } from './QueryDeviceTripletNetID';
 import { QueryDeviceTripletTypeNetID } from './QueryDeviceTripletTypeNetID';
 import { QueryDeviceTripletCompany } from './QueryDeviceTripletCompany';
-import { Format } from './format';
-import { EmptySelectableValue } from './constance';
+import { Format } from '../format';
+import { EmptySelectableValue } from '../constance';
+import { InlineFieldRow } from '@grafana/ui';
 
 export const QueryDeviceTriplet = ({ group, featuresSlug, setAlert, queryMode, device, datasource, setDevice }) => {
   const [netID, setNetID] = React.useState<string>(device?.net_id ?? '');

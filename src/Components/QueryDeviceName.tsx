@@ -1,8 +1,8 @@
 import React from 'react';
 import { SelectableValue } from '@grafana/data';
 import { Select } from '@grafana/ui';
-import { Format } from './format';
-import { EmptySelectableValue } from './constance';
+import { Format } from '../format';
+import { EmptySelectableValue } from '../constance';
 
 export const QueryDeviceName = ({ setAlert, queryMode, group, featuresSlug, datasource, device, setDevice }) => {
   const [deviceOptions, setDeviceOptions] = React.useState<Array<SelectableValue<number>>>([]);

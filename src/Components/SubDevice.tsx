@@ -1,8 +1,8 @@
 import React from 'react';
 import { Select } from '@grafana/ui';
-import { SubDeviceFindValue } from './types';
+import { SubDeviceFindValue } from '../types';
 import { SelectableValue } from '@grafana/data';
-import { EmptySelectableValue } from './constance';
+import { EmptySelectableValue } from '../constance';
 import { find } from 'lodash';
 
 export const SubDevice = ({ setAlert, device, datasource, subDevice, setSubDevice, query }) => {

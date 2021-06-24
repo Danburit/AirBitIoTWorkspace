@@ -1,6 +1,6 @@
-import { Format } from './format';
+import { Format } from '../format';
 import React from 'react';
-import { Input } from '@grafana/ui';
+import { InlineField, Input } from '@grafana/ui';
 
 export const QueryDeviceTripletNetID = ({ setAlert, queryMode, device, netID, setNetID }) => {
   const [netIDStr, setNetIDStr] = React.useState<string>(netID || '');

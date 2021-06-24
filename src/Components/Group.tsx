@@ -1,8 +1,8 @@
 import React from 'react';
 import { SelectableValue } from '@grafana/data';
 import { Select } from '@grafana/ui';
-import { EmptySelectableValue } from './constance';
-import { SubDeviceFindValue } from './types';
+import { EmptySelectableValue } from '../constance';
+import { SubDeviceFindValue } from '../types';
 import { find } from 'lodash';
 export const Group = ({ setAlert, datasource, group, setGroup, query }) => {
   const [groupOptions, setGroupOptions] = React.useState<Array<SelectableValue<number>>>([]);

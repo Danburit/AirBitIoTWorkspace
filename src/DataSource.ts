@@ -1,7 +1,6 @@
-import { AnnotationEvent, DataQueryResponse, DataSourceApi, DataSourceInstanceSettings } from '@grafana/data';
-import { AnnotationQueryRequest } from '@grafana/data/types/datasource';
-import { getBackendSrv, getTemplateSrv } from '@grafana/runtime';
-import { isEqual, isObject } from 'lodash';
+import { DataQueryResponse, DataSourceApi, DataSourceInstanceSettings, toDataFrame } from '@grafana/data';
+import { getBackendSrv } from '@grafana/runtime';
+import { isObject } from 'lodash';
 import {
   CompanyFindValue,
   DeviceValue,
@@ -10,17 +9,13 @@ import {
   GrafanaQuery,
   GroupFindValue,
   MetricFindValue1,
-  MultiValueVariable,
   QueryRequest,
   SubDeviceFindValue,
-  TextValuePair,
   TypeNetIDValue,
   UserCheckValue,
   DeviceFindValue,
 } from './types';
 
-const supportedVariableTypes = ['adhoc', 'constant', 'custom', 'query', 'textbox'];
-const debugDS = false;
 export class DataSource extends DataSourceApi<GrafanaQuery, GenericOptions> {
   url: string;
   withCredentials: boolean;
@@ -47,15 +42,14 @@ export class DataSource extends DataSourceApi<GrafanaQuery, GenericOptions> {
       delete obj['lastQuery'];
       return obj;
     });
-    // @ts-ignore
-    request.adhocFilters = getTemplateSrv().getAdhocFilters(this.name);
-
-    options.scopedVars = { ...this.getVariables(), ...options.scopedVars };
 
     return this.doRequest({
       url: `${this.url}/query/`,
       data: request,
       method: 'POST',
+    }).then((entry) => {
+      entry.data = entry.data.map(toDataFrame);
+      return entry;
     });
   }
 
@@ -168,33 +162,6 @@ export class DataSource extends DataSourceApi<GrafanaQuery, GenericOptions> {
     }).then(this.mapToTextValue);
   }
 
-  annotationQuery(
-    options: AnnotationQueryRequest<GrafanaQuery & { query: string; iconColor: string }>
-  ): Promise<AnnotationEvent[]> {
-    const query = getTemplateSrv().replace(options.annotation.query, {}, 'glob');
-
-    const annotationQuery = {
-      annotation: {
-        query,
-        name: options.annotation.name,
-        datasource: options.annotation.datasource,
-        enable: options.annotation.enable,
-        iconColor: options.annotation.iconColor,
-      },
-      range: options.range,
-      rangeRaw: options.rangeRaw,
-      variables: this.getVariables(),
-    };
-
-    return this.doRequest({
-      url: `${this.url}/annotations`,
-      method: 'POST',
-      data: annotationQuery,
-    }).then((result: any) => {
-      return result.data;
-    });
-  }
-
   mapToTextValue(result: any) {
     if (isObject(result.data)) {
       return result.data;
@@ -227,51 +194,5 @@ export class DataSource extends DataSourceApi<GrafanaQuery, GenericOptions> {
       return target?.device !== undefined && target?.metrics !== undefined;
     });
     return options;
-  }
-
-  cleanMatch(match: string, options: any) {
-    const replacedMatch = getTemplateSrv().replace(match, options.scopedVars, 'json');
-    if (
-      typeof replacedMatch === 'string' &&
-      replacedMatch[0] === '"' &&
-      replacedMatch[replacedMatch.length - 1] === '"'
-    ) {
-      return JSON.parse(replacedMatch);
-    }
-    return replacedMatch;
-  }
-
-  getVariables() {
-    const variables: { [id: string]: TextValuePair } = {};
-    Object.values(getTemplateSrv().getVariables()).forEach((variable) => {
-      if (!supportedVariableTypes.includes(variable.type)) {
-        debugDS && console.warn(`Variable of type "${variable.type}" is not supported`);
-
-        return;
-      }
-
-      if (variable.type === 'adhoc') {
-        // These are being added to request.adhocFilters
-        return;
-      }
-
-      const supportedVariable = variable as MultiValueVariable;
-
-      let variableValue = supportedVariable.current.value;
-      if (variableValue === '$__all' || isEqual(variableValue, ['$__all'])) {
-        if (supportedVariable.allValue === null || supportedVariable.allValue === '') {
-          variableValue = supportedVariable.options.slice(1).map((textValuePair) => textValuePair.value);
-        } else {
-          variableValue = supportedVariable.allValue;
-        }
-      }
-
-      variables[supportedVariable.id] = {
-        text: supportedVariable.current.text,
-        value: variableValue,
-      };
-    });
-
-    return variables;
   }
 }
