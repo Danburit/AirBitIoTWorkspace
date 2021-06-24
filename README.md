@@ -1,5 +1,5 @@
 # AirBit IoT Workspace datasource for Grafana
-This plugin based on [GrafanaJsonDatasource](https://github.com/simPod/GrafanaJsonDatasource).
+This plugin based on [GrafanaJsonDatasource](https://github.com/simPod/GrafanaJsonDatasource) and integrates with the AirBit workspace application.
 
 ## Contents
 - [Before you start](#before-you-start)
