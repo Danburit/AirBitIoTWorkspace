@@ -15,6 +15,12 @@
             "small": "img/logo-2.svg",
             "large": "img/logo-2.svg"
         },
+        "screenshots": [
+            {
+                "name": "panel",
+                "path": "img/panel.png"
+            }
+        ],
         "links": [
             {
                 "name": "GitHub",
