@@ -15,11 +15,11 @@ This plugin based on [GrafanaJsonDatasource](https://github.com/simPod/GrafanaJs
 * compatible with Grafana version 7.5.7
 * plugin is unsigned 
 
-To make the plugin work, add the airbit-iot-ws-datasource id to the parameter allow_loading_unsigned_plugins in the grafana.ini configuration.
+To make the plugin work, add the airbit-workspace-datasource id to the parameter allow_loading_unsigned_plugins in the grafana.ini configuration.
 ```ini
 ...
 [plugins]
-allow_loading_unsigned_plugins = "airbit-iot-ws-datasource"
+allow_loading_unsigned_plugins = "airbit-workspace-datasource"
 ...
 ```
 
@@ -27,7 +27,7 @@ allow_loading_unsigned_plugins = "airbit-iot-ws-datasource"
 ### Install on Ubuntu Linux
 To install the plugin on Ubuntu Linux:
 ```shell
-sudo grafana-cli --pluginUrl https://github.com/Danburit/AirBitIoTWorkspace/releases/download/v0.2.5/airbit-iot-ws-datasource.zip plugins install airbit-iot-ws-datasource
+sudo grafana-cli --pluginUrl https://github.com/Danburit/AirBitIoTWorkspace/releases/download/v0.2.5/airbit-workspace-datasource.zip plugins install airbit-workspace-datasource
 sudo /bin/systemctl restart grafana-server
 ```
 
@@ -39,7 +39,7 @@ When adding a data source, add the API endpoint to the `URL` field. This is wher
 ### Uninstall on Ubuntu Linux
 To uninstall the plugin on Ubuntu Linux:
 ```shell
-sudo grafana-cli plugins uninstall airbit-iot-ws-datasource
+sudo grafana-cli plugins uninstall airbit-workspace-datasource
 sudo /bin/systemctl restart grafana-server
 ```
 

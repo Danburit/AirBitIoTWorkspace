@@ -1,6 +1,6 @@
 {
     "name": "AirBit IoT Workspace",
-    "id": "airbit-iot-ws-datasource",
+    "id": "airbit-workspace-datasource",
     "type": "datasource",
     "annotations": false,
     "metrics": true,

@@ -1,5 +1,5 @@
 {
-  "name": "AirBitIoTWorkspace",
+  "name": "airbit-workspace-datasource",
   "description": "Grafana JSON datasource",
   "main": "index.js",
   "version": "0.2.5",
@@ -10,7 +10,7 @@
     "watch": "grafana-toolkit plugin:dev --watch",
     "sign": "grafana-toolkit plugin:sign",
     "build-sign-release": "yarn run build && yarn run sign && yarn run package",
-    "package": "cp -r dist/ airbit-iot-ws-datasource && zip airbit-iot-ws-datasource.zip airbit-iot-ws-datasource -r && rm -rfd airbit-iot-ws-datasource",
+    "package": "cp -r dist/ airbit-workspace-datasource && zip airbit-workspace-datasource.zip airbit-workspace-datasource -r && rm -rfd airbit-workspace-datasource",
     "release:patch": "npm version patch && yarn run build-sign-release",
     "prettier:check": "prettier --list-different \"**/*.{ts,tsx,scss}\"",
     "prettier:write": "prettier --list-different \"**/*.{ts,tsx,scss}\" --write"
