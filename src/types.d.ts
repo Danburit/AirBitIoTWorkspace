@@ -1,4 +1,10 @@
-import { DataQuery, DataQueryRequest, DataSourceJsonData, MetricFindValue, VariableModel } from '@grafana/data';
+import {
+  DataQuery,
+  DataQueryRequest,
+  DataSourceJsonData,
+  MetricFindValue,
+  SelectableValue,
+} from '@grafana/data';
 import { TemplateSrv as GrafanaTemplateSrv } from '@grafana/runtime';
 import { Format } from './format';
 
@@ -42,11 +48,18 @@ export interface LastQuery {
   queryMode: SelectableValue<Format>;
   group?: SelectableValue<number>;
   featuresSlug?: SelectableValue<number>;
+  address?: SelectableValue<number>;
+  converter?: SelectableValue<number>;
   // typeNetID: SelectableValue<number>;
   // company: SelectableValue<number>;
 }
 
 export interface SubDeviceFindValue extends MetricFindValue {
+  value: any;
+  text: string;
+}
+
+export interface ConverterFindValue extends MetricFindValue {
   value: any;
   text: string;
 }
@@ -69,6 +82,11 @@ export interface TypeNetIDValue extends MetricFindValue {
 }
 
 export interface CompanyFindValue extends MetricFindValue {
+  value: any;
+  text: string;
+}
+
+export interface AddressFindValue extends MetricFindValue {
   value: any;
   text: string;
 }

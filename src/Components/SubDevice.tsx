@@ -2,10 +2,19 @@ import React from 'react';
 import { Select } from '@grafana/ui';
 import { SubDeviceFindValue } from '../types';
 import { SelectableValue } from '@grafana/data';
-import { EmptySelectableValue } from '../constance';
+import { EmptySelectableValue, SubDeviceID } from '../constance';
 import { find } from 'lodash';
 
-export const SubDevice = ({ setAlert, device, datasource, subDevice, setSubDevice, query }) => {
+export const SubDevice = ({
+  conv_SubDev,
+  setConv_SubDev,
+  setAlert,
+  device,
+  datasource,
+  subDevice,
+  setSubDevice,
+  query,
+}) => {
   const [subDeviceIsClearable, setSubDeviceIsClearable] = React.useState<boolean>(false);
   const [subDeviceOptionsIsLoading, setSubDeviceOptionsIsLoading] = React.useState<boolean>(false);
   const [subDeviceOptions, setSubDeviceOptions] = React.useState<Array<SelectableValue<number>>>([]);
@@ -16,8 +25,8 @@ export const SubDevice = ({ setAlert, device, datasource, subDevice, setSubDevic
         device_id: device_id,
       };
       return datasource.subDeviceFindQuery(data).then(
-        (results: SubDeviceFindValue[]) => {
-          let r = results.map((value: SubDeviceFindValue) => ({ label: value.text, value: value.value }));
+        (result: SubDeviceFindValue[]) => {
+          let r = result.map((value: SubDeviceFindValue) => ({ label: value.text, value: value.value }));
           let f = find(r, (v) => v.value === query?.subdevice) ?? EmptySelectableValue;
           setSubDevice(f);
           setSubDeviceIsClearable(f !== EmptySelectableValue);
@@ -59,8 +68,9 @@ export const SubDevice = ({ setAlert, device, datasource, subDevice, setSubDevic
     return null;
   }
   return (
-    <div className="gf-form">
+    <div className="gf-form gf-form--grow">
       <Select
+        disabled={!(conv_SubDev === -1 || conv_SubDev === SubDeviceID)}
         isClearable={subDeviceIsClearable}
         isLoading={subDeviceOptionsIsLoading}
         value={subDevice}
@@ -68,9 +78,11 @@ export const SubDevice = ({ setAlert, device, datasource, subDevice, setSubDevic
         options={subDeviceOptions}
         onChange={(e) => {
           if (e === null) {
+            setConv_SubDev(-1);
             setSubDevice(EmptySelectableValue);
             setSubDeviceIsClearable(false);
           } else {
+            setConv_SubDev(SubDeviceID);
             setSubDevice(e);
             setSubDeviceIsClearable(true);
           }

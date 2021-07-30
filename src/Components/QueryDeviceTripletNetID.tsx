@@ -1,13 +1,13 @@
 import { Format } from '../format';
 import React from 'react';
-import { InlineField, Input } from '@grafana/ui';
+import { Input } from '@grafana/ui';
 
 export const QueryDeviceTripletNetID = ({ setAlert, queryMode, device, netID, setNetID }) => {
   const [netIDStr, setNetIDStr] = React.useState<string>(netID || '');
   const refreshNetID = React.useCallback(
     (netID: string) => {
-      setNetIDStr(netID);
-      setNetID(netID);
+      setNetIDStr((prev) => netID);
+      setNetID((prev) => netID);
     },
     [setNetID]
   );
@@ -27,11 +27,11 @@ export const QueryDeviceTripletNetID = ({ setAlert, queryMode, device, netID, se
         value={netIDStr}
         onChange={(v) => {
           // @ts-ignore
-          setNetIDStr(v.target.value);
+          setNetIDStr((prev) => v.target.value);
         }}
         onBlur={() => {
           if (netIDStr !== '') {
-            setNetID(netIDStr);
+            setNetID((prev) => netIDStr);
           }
         }}
         prefix={'Net ID: '}

@@ -6,22 +6,38 @@ import { QueryDeviceTripletTypeNetID } from './QueryDeviceTripletTypeNetID';
 import { QueryDeviceTripletCompany } from './QueryDeviceTripletCompany';
 import { Format } from '../format';
 import { EmptySelectableValue } from '../constance';
-import { InlineFieldRow } from '@grafana/ui';
 
-export const QueryDeviceTriplet = ({ group, featuresSlug, setAlert, queryMode, device, datasource, setDevice }) => {
+export const QueryDeviceTriplet = ({
+  group,
+  featuresSlug,
+  setAlert,
+  queryMode,
+  device,
+  datasource,
+  setDevice,
+  address,
+}) => {
   const [netID, setNetID] = React.useState<string>(device?.net_id ?? '');
   const [typeNetID, setTypeNetID] = React.useState<SelectableValue<number>>(EmptySelectableValue);
   const [useCompany, setUseCompany] = React.useState<boolean>(false);
   const [company, setCompany] = React.useState<SelectableValue<number>>(EmptySelectableValue);
 
   const loadDevice = React.useCallback(
-    (net_id: string, net_id_type_id: number, company_id?: number, group?: number, features_slug?: number) => {
+    (
+      net_id: string,
+      net_id_type_id: number,
+      company_id?: number,
+      group?: number,
+      features_slug?: number,
+      address?: number
+    ) => {
       let data: {
         net_id: string;
         net_id_type_id: number;
         company_id?: number | null;
         group?: number;
         features_slug?: number;
+        address?: number;
       } = {
         net_id: net_id,
         net_id_type_id: net_id_type_id,
@@ -30,10 +46,13 @@ export const QueryDeviceTriplet = ({ group, featuresSlug, setAlert, queryMode, d
         data.company_id = company_id;
       }
       if (group !== undefined) {
-        data['group'] = group;
+        data.group = group;
       }
       if (features_slug !== undefined) {
-        data['features_slug'] = features_slug;
+        data.features_slug = features_slug;
+      }
+      if (address !== undefined) {
+        data.address = address;
       }
       return datasource.deviceByNetIDFindQuery(data).then(
         (result: DeviceValue) => {
@@ -52,6 +71,9 @@ export const QueryDeviceTriplet = ({ group, featuresSlug, setAlert, queryMode, d
           if (features_slug !== undefined) {
             title += `\nfeatures_slug: ${features_slug}`;
           }
+          if (address !== undefined) {
+            title += `\naddress: ${address}`;
+          }
           let severity = 'error';
           setAlert({ title: title, severity: severity });
           throw new Error(response.statusText);
@@ -61,8 +83,15 @@ export const QueryDeviceTriplet = ({ group, featuresSlug, setAlert, queryMode, d
     [datasource, useCompany]
   );
   const refreshDevice = React.useCallback(
-    (net_id: string, net_id_type_id: number, company_id?: number, group?: number, features_slug?: number) => {
-      loadDevice(net_id, net_id_type_id, company_id, group, features_slug).then((result) => {
+    (
+      net_id: string,
+      net_id_type_id: number,
+      company_id?: number,
+      group?: number,
+      features_slug?: number,
+      address?: number
+    ) => {
+      loadDevice(net_id, net_id_type_id, company_id, group, features_slug, address).then((result) => {
         if (result?.id === undefined) {
           let title = `Device:\nUnknown device:`;
           title += `\nnetID: ${net_id}`;
@@ -75,6 +104,9 @@ export const QueryDeviceTriplet = ({ group, featuresSlug, setAlert, queryMode, d
           }
           if (features_slug !== undefined) {
             title += `\nfeatures_slug: ${features_slug}`;
+          }
+          if (address !== undefined) {
+            title += `\naddress: ${address}`;
           }
           let severity = 'warning';
           setAlert({ title: title, severity: severity });
@@ -98,8 +130,8 @@ export const QueryDeviceTriplet = ({ group, featuresSlug, setAlert, queryMode, d
       return;
     }
 
-    refreshDevice(netID, typeNetID.value, company?.value, group?.value, featuresSlug?.value);
-  }, [refreshDevice, netID, typeNetID, company, group, featuresSlug]);
+    refreshDevice(netID, typeNetID.value, company?.value, group?.value, featuresSlug?.value, address?.value);
+  }, [refreshDevice, netID, typeNetID, company, group, featuresSlug, address]);
 
   const checkUseCompany = React.useCallback(() => {
     return datasource.userCheckQuery().then(
@@ -107,10 +139,10 @@ export const QueryDeviceTriplet = ({ group, featuresSlug, setAlert, queryMode, d
         return result?.is_super ?? false;
       },
       (response: any) => {
-        setUseCompany(false);
+        setUseCompany((prev) => false);
         let title = `Checking using company error:\n${response.status} - ${response.statusText}`;
         let severity = 'error';
-        setAlert({ title: title, severity: severity });
+        setAlert((prev) => ({ title: title, severity: severity }));
         throw new Error(response.statusText);
       }
     );
@@ -118,7 +150,7 @@ export const QueryDeviceTriplet = ({ group, featuresSlug, setAlert, queryMode, d
 
   React.useEffect(() => {
     checkUseCompany().then((is_super: boolean) => {
-      setUseCompany(is_super);
+      setUseCompany((prev) => is_super);
     });
   }, [checkUseCompany]);
 

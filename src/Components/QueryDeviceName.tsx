@@ -4,7 +4,16 @@ import { Select } from '@grafana/ui';
 import { Format } from '../format';
 import { EmptySelectableValue } from '../constance';
 
-export const QueryDeviceName = ({ setAlert, queryMode, group, featuresSlug, datasource, device, setDevice }) => {
+export const QueryDeviceName = ({
+  setAlert,
+  queryMode,
+  group,
+  featuresSlug,
+  address,
+  datasource,
+  device,
+  setDevice,
+}) => {
   const [deviceOptions, setDeviceOptions] = React.useState<Array<SelectableValue<number>>>([]);
   const [deviceOptionsIsLoading, setDeviceOptionsIsLoading] = React.useState<boolean>(false);
   const [deviceIsClearable, setDeviceIsClearable] = React.useState<boolean>(false);
@@ -14,8 +23,8 @@ export const QueryDeviceName = ({ setAlert, queryMode, group, featuresSlug, data
   );
 
   const loadDeviceOptions = React.useCallback(
-    (device_name: string, group?: number, features_slug?: number) => {
-      let data: { device_name: string; group?: number; features_slug?: number } = {
+    (device_name: string, group?: number, features_slug?: number, address?: number) => {
+      let data: { device_name: string; group?: number; features_slug?: number; address?: number } = {
         device_name: device_name,
       };
       if (group !== undefined) {
@@ -23,6 +32,9 @@ export const QueryDeviceName = ({ setAlert, queryMode, group, featuresSlug, data
       }
       if (features_slug !== undefined) {
         data.features_slug = features_slug;
+      }
+      if (address !== undefined) {
+        data.address = address;
       }
       return datasource.deviceByNameFindQuery(data).then(
         (result) => {
@@ -34,10 +46,13 @@ export const QueryDeviceName = ({ setAlert, queryMode, group, featuresSlug, data
           let title = `DeviceByNameOptions loading error:\n${response.status} - ${response.statusText}`;
           title += `\ndevice_name: ${device_name}`;
           if (group !== undefined) {
-            title += group;
+            title += `\ngroup: ${group}`;
           }
           if (features_slug !== undefined) {
-            title += features_slug;
+            title += `\nfeatures_slug: ${features_slug}`;
+          }
+          if (address !== undefined) {
+            title += `\naddress: ${address}`;
           }
           let severity = 'error';
           setAlert({ title: title, severity: severity });
@@ -48,23 +63,23 @@ export const QueryDeviceName = ({ setAlert, queryMode, group, featuresSlug, data
     [datasource]
   );
   const refreshDeviceOptions = React.useCallback(
-    (device_name: string, group?: number, features_slug?: number) => {
-      setDeviceOptionsIsLoading(true);
-      loadDeviceOptions(device_name, group, features_slug)
+    (device_name: string, group?: number, features_slug?: number, address?: number) => {
+      setDeviceOptionsIsLoading((prev) => true);
+      loadDeviceOptions(device_name, group, features_slug, address)
         .then((deviceOptions) => {
-          setDeviceOptions(deviceOptions);
+          setDeviceOptions((prev) => deviceOptions);
         })
         .finally(() => {
-          setDeviceOptionsIsLoading(false);
+          setDeviceOptionsIsLoading((prev) => false);
         });
     },
     [loadDeviceOptions, setDeviceOptions, setDeviceOptionsIsLoading] // доп рендерит изза сеттеров
   );
   React.useEffect(() => {
     if (deviceQr !== '' && queryMode.value === Format.DeviceName) {
-      return refreshDeviceOptions(deviceQr, group?.value, featuresSlug?.value);
+      return refreshDeviceOptions(deviceQr, group?.value, featuresSlug?.value, address?.value);
     }
-  }, [deviceQr, refreshDeviceOptions, group, featuresSlug]);
+  }, [deviceQr, refreshDeviceOptions, group, featuresSlug, address]);
 
   const loadDevice = React.useCallback(
     (device_id) => {
@@ -79,7 +94,7 @@ export const QueryDeviceName = ({ setAlert, queryMode, group, featuresSlug, data
           let title = `DeviceByID loading error:\n${response.status} - ${response.statusText}`;
           title += `\ndevice_id: ${device_id}`;
           let severity = 'error';
-          setAlert({ title: title, severity: severity });
+          setAlert((prev) => ({ title: title, severity: severity }));
           throw new Error(response.statusText);
         }
       );
@@ -89,8 +104,8 @@ export const QueryDeviceName = ({ setAlert, queryMode, group, featuresSlug, data
   const refreshDevice = React.useCallback(
     (device_id) => {
       loadDevice(device_id).then((device) => {
-        setDeviceIsClearable(true);
-        setDevice(device);
+        setDeviceIsClearable((prev) => true);
+        setDevice((prev) => device);
       });
     },
     [loadDevice, setDevice]
@@ -104,8 +119,8 @@ export const QueryDeviceName = ({ setAlert, queryMode, group, featuresSlug, data
 
   const refreshSelDevice = React.useCallback(
     (device) => {
-      setDeviceIsClearable(true);
-      setSelDevice({ label: device?.name || device.id, value: device.id });
+      setDeviceIsClearable((prev) => true);
+      setSelDevice((prev) => ({ label: device?.name || device.id, value: device.id }));
     },
     [setSelDevice]
   );
@@ -129,15 +144,15 @@ export const QueryDeviceName = ({ setAlert, queryMode, group, featuresSlug, data
         value={selDevice}
         onChange={(v) => {
           if (v === null) {
-            setDeviceIsClearable(false);
-            setSelDevice(EmptySelectableValue);
+            setDeviceIsClearable((prev) => false);
+            setSelDevice((prev) => EmptySelectableValue);
           } else {
-            setDeviceIsClearable(true);
-            setSelDevice(v);
+            setDeviceIsClearable((prev) => true);
+            setSelDevice((prev) => v);
           }
         }}
         onInputChange={(v) => {
-          setDeviceQr(v ?? '');
+          setDeviceQr((prev) => v ?? '');
         }}
       />
     </div>

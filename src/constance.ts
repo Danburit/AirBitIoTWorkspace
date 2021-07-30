@@ -9,3 +9,6 @@ export const queryModeOptions = [
 export const EmptySelectableValue = {
   label: '',
 };
+
+export const ConverterID = 1;
+export const SubDeviceID = 2;

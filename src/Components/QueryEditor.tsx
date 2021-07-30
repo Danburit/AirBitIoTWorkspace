@@ -13,6 +13,8 @@ import { QueryDeviceID } from './QueryDeviceID';
 import { Group } from './Group';
 import { FeaturesSlug } from './FeaturesSlug';
 import { Format } from '../format';
+import { Address } from './Address';
+import { Converter } from './Converter';
 
 type Props = QueryEditorProps<DataSource, GrafanaQuery, GenericOptions>;
 
@@ -22,6 +24,9 @@ export const QueryEditor: ComponentType<Props> = ({ datasource, onChange, onRunQ
   );
   const [subDevice, setSubDevice] = React.useState<SelectableValue<number>>(
     query?.lastQuery?.subDevice || EmptySelectableValue
+  );
+  const [converter, setConverter] = React.useState<SelectableValue<number>>(
+    query?.lastQuery?.converter ?? EmptySelectableValue
   );
   const [metrics, setMetrics] = React.useState<SelectableValue<string>>(query?.lastQuery?.metrics ?? []);
   const [alert, setAlert] = React.useState<AlertValue | null>(null);
@@ -33,7 +38,33 @@ export const QueryEditor: ComponentType<Props> = ({ datasource, onChange, onRunQ
   const [featuresSlug, setFeaturesSlug] = React.useState<SelectableValue<number>>(
     query?.lastQuery?.featuresSlug ?? EmptySelectableValue
   );
+  const [address, setAddress] = React.useState<SelectableValue<number>>(
+    query?.lastQuery?.address ?? EmptySelectableValue
+  );
 
+  const [conv_SubDev, setConv_SubDev] = React.useState<number>(-1);
+
+  React.useEffect(() => {
+    setConv_SubDev((prev) => -1);
+    setMetrics((prev) => []);
+    setConverter((prev) => EmptySelectableValue);
+    setSubDevice((prev) => EmptySelectableValue);
+  }, [device]);
+  React.useEffect(() => {
+    if (metrics.length !== 0) {
+      setMetrics((prev) => []);
+    }
+  }, [converter, subDevice]);
+  React.useEffect(() => {
+    if (subDevice !== EmptySelectableValue) {
+      setSubDevice((prev) => EmptySelectableValue);
+    }
+  }, [converter]);
+  React.useEffect(() => {
+    if (converter !== EmptySelectableValue) {
+      setConverter((prev) => EmptySelectableValue);
+    }
+  }, [subDevice]);
   React.useEffect(() => {
     if (device?.id === undefined || !metrics.length) {
       return;
@@ -70,7 +101,13 @@ export const QueryEditor: ComponentType<Props> = ({ datasource, onChange, onRunQ
     if (featuresSlug !== EmptySelectableValue) {
       tLastQuery.featuresSlug = featuresSlug;
     }
-    setLastQuery(tLastQuery);
+    if (address !== EmptySelectableValue) {
+      tLastQuery.address = address;
+    }
+    if (converter !== EmptySelectableValue) {
+      tLastQuery.converter = converter;
+    }
+    setLastQuery((prev) => tLastQuery);
     obj.lastQuery = tLastQuery;
     onChange(obj);
 
@@ -86,7 +123,7 @@ export const QueryEditor: ComponentType<Props> = ({ datasource, onChange, onRunQ
         <Alert
           title={alert?.title ?? ''}
           onRemove={(e) => {
-            setAlert(null);
+            setAlert((prev) => null);
           }}
           // @ts-ignore
           severity={alert?.severity ?? 'error'}
@@ -106,17 +143,20 @@ export const QueryEditor: ComponentType<Props> = ({ datasource, onChange, onRunQ
         featuresSlug={featuresSlug}
         setFeaturesSlug={setFeaturesSlug}
       />
+      <Address setAlert={setAlert} address={address} setAddress={setAddress} datasource={datasource} query={query} />
       <QueryMode queryMode={queryMode} setQueryMode={setQueryMode} />
       <QueryDeviceName
         setAlert={setAlert}
         queryMode={queryMode}
         group={group}
         featuresSlug={featuresSlug}
+        address={address}
         device={device}
         datasource={datasource}
         setDevice={setDevice}
       />
       <QueryDeviceTriplet
+        address={address}
         setAlert={setAlert}
         group={group}
         featuresSlug={featuresSlug}
@@ -130,24 +170,41 @@ export const QueryEditor: ComponentType<Props> = ({ datasource, onChange, onRunQ
         setAlert={setAlert}
         group={group}
         featuresSlug={featuresSlug}
+        address={address}
         queryMode={queryMode}
         datasource={datasource}
         device={device}
         setDevice={setDevice}
       />
-      <SubDevice
-        query={query}
-        setAlert={setAlert}
-        device={device}
-        subDevice={subDevice}
-        setSubDevice={setSubDevice}
-        datasource={datasource}
-      />
+      <div className="gf-form gf-form-inline--nowrap">
+        <Converter
+          conv_SubDev={conv_SubDev}
+          setConv_SubDev={setConv_SubDev}
+          query={query}
+          setAlert={setAlert}
+          datasource={datasource}
+          device={device}
+          converter={converter}
+          setConverter={setConverter}
+        />
+        <SubDevice
+          conv_SubDev={conv_SubDev}
+          setConv_SubDev={setConv_SubDev}
+          query={query}
+          setAlert={setAlert}
+          device={device}
+          subDevice={subDevice}
+          setSubDevice={setSubDevice}
+          datasource={datasource}
+        />
+      </div>
       <Metric
+        conv_SubDev={conv_SubDev}
         query={query}
         setAlert={setAlert}
         datasource={datasource}
         metrics={metrics}
+        converter={converter}
         setMetrics={setMetrics}
         device={device}
         subDevice={subDevice}

@@ -14,26 +14,26 @@ export const FeaturesSlug = ({ setAlert, datasource, featuresSlug, setFeaturesSl
       (result: any) => {
         let r = result.map((value: any) => ({ label: value.text, value: value.value }));
         let f = find(r, (v) => v.value === query?.lastQuery?.featuresSlug?.value) ?? EmptySelectableValue;
-        setFeaturesSlugIsClearable(f !== EmptySelectableValue);
-        setFeaturesSlug(f);
+        setFeaturesSlugIsClearable((prev) => f !== EmptySelectableValue);
+        setFeaturesSlug((prev) => f);
         return r;
       },
       (response: any) => {
         let title = `Features set loading error:\n${response.status} - ${response.statusText}`;
         let severity = 'error';
-        setAlert({ title: title, severity: severity });
+        setAlert((prev) => ({ title: title, severity: severity }));
         throw new Error(response.statusText);
       }
     );
   }, [datasource]);
   const refreshFeaturesSlugOptions = React.useCallback(() => {
-    setFeaturesSlugOptionsIsLoading(true);
+    setFeaturesSlugOptionsIsLoading((prev) => true);
     loadFeaturesSlugOptions()
       .then((result) => {
-        setFeaturesSlugOptions(result);
+        setFeaturesSlugOptions((prev) => result);
       })
       .finally(() => {
-        setFeaturesSlugOptionsIsLoading(false);
+        setFeaturesSlugOptionsIsLoading((prev) => false);
       });
   }, [loadFeaturesSlugOptions, setFeaturesSlugOptionsIsLoading, setFeaturesSlugOptions]);
   React.useEffect(() => {
@@ -49,11 +49,11 @@ export const FeaturesSlug = ({ setAlert, datasource, featuresSlug, setFeaturesSl
         placeholder=""
         onChange={(v) => {
           if (v === null) {
-            setFeaturesSlugIsClearable(false);
-            setFeaturesSlug(EmptySelectableValue);
+            setFeaturesSlugIsClearable((prev) => false);
+            setFeaturesSlug((prev) => EmptySelectableValue);
           } else {
-            setFeaturesSlugIsClearable(true);
-            setFeaturesSlug(v);
+            setFeaturesSlugIsClearable((prev) => true);
+            setFeaturesSlug((prev) => v);
           }
         }}
         isClearable={featuresSlugIsClearable}

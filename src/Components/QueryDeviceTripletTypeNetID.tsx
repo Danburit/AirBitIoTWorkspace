@@ -1,7 +1,7 @@
 import { TypeNetIDValue } from '../types';
 import React from 'react';
 import { SelectableValue } from '@grafana/data';
-import { InlineField, Select } from '@grafana/ui';
+import { Select } from '@grafana/ui';
 import { find } from 'lodash';
 import { Format } from '../format';
 import { EmptySelectableValue } from '../constance';
@@ -14,26 +14,26 @@ export const QueryDeviceTripletTypeNetID = ({ setAlert, queryMode, device, typeN
   const loadTypeNetIDOptions = React.useCallback(() => {
     return datasource.typeNetIDFindQuery().then(
       (result: TypeNetIDValue[]) => {
-        setTypeNetID(EmptySelectableValue);
-        setTypeNetIDIsClearable(false);
+        setTypeNetID((prev) => EmptySelectableValue);
+        setTypeNetIDIsClearable((prev) => false);
         return result.map((value) => ({ label: value.text, value: value.value }));
       },
       (response: any) => {
         let title = `TypeNetIDOptions loading error:\n${response.status} - ${response.statusText}`;
         let severity = 'error';
-        setAlert({ title: title, severity: severity });
+        setAlert((prev) => ({ title: title, severity: severity }));
         throw new Error(response.statusText);
       }
     );
   }, [datasource]);
   const refreshTypeNetIDOptions = React.useCallback(() => {
-    setTypeNetIDOptionsIsLoading(true);
+    setTypeNetIDOptionsIsLoading((prev) => true);
     loadTypeNetIDOptions()
       .then((result) => {
-        setTypeNetIDOptions(result);
+        setTypeNetIDOptions((prev) => result);
       })
       .finally(() => {
-        setTypeNetIDOptionsIsLoading(false);
+        setTypeNetIDOptionsIsLoading((prev) => false);
       });
   }, [loadTypeNetIDOptions, setTypeNetIDOptionsIsLoading, setTypeNetIDOptions]);
 
@@ -45,9 +45,9 @@ export const QueryDeviceTripletTypeNetID = ({ setAlert, queryMode, device, typeN
     (net_id_type_id: number) => {
       let i = find(typeNetIDOptions, (option) => option.value === net_id_type_id) ?? EmptySelectableValue;
       if (i !== EmptySelectableValue) {
-        setTypeNetIDIsClearable(true);
+        setTypeNetIDIsClearable((prev) => true);
       }
-      setTypeNetID(i);
+      setTypeNetID((prev) => i);
     },
     [setTypeNetID, typeNetIDOptions]
   );
@@ -71,11 +71,11 @@ export const QueryDeviceTripletTypeNetID = ({ setAlert, queryMode, device, typeN
         options={typeNetIDOptions}
         onChange={(v) => {
           if (v === null) {
-            setTypeNetIDIsClearable(false);
-            setTypeNetID(EmptySelectableValue);
+            setTypeNetIDIsClearable((prev) => false);
+            setTypeNetID((prev) => EmptySelectableValue);
           } else {
-            setTypeNetIDIsClearable(true);
-            setTypeNetID(v);
+            setTypeNetIDIsClearable((prev) => true);
+            setTypeNetID((prev) => v);
           }
         }}
       />

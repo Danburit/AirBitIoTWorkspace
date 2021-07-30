@@ -2,20 +2,33 @@ import { Format } from '../format';
 import React from 'react';
 import { Input } from '@grafana/ui';
 
-export const QueryDeviceID = ({ group, featuresSlug, query, setAlert, queryMode, datasource, device, setDevice }) => {
+export const QueryDeviceID = ({
+  group,
+  featuresSlug,
+  query,
+  setAlert,
+  queryMode,
+  datasource,
+  device,
+  setDevice,
+  address,
+}) => {
   const [deviceID, setDeviceID] = React.useState<number | null>(query?.device ?? device?.id ?? null);
   const [deviceIDInput, setDeviceIDInput] = React.useState<number | null>(query?.device ?? device?.id ?? null);
 
   const loadDevice = React.useCallback(
-    (device_id: number, group?: number, features_slug?: number) => {
-      let data: { device_id: number; group?: number; featuresSlug?: number } = {
+    (device_id: number, group?: number, features_slug?: number, address?: number) => {
+      let data: { device_id: number; group?: number; featuresSlug?: number; address?: number } = {
         device_id: device_id,
       };
       if (group !== undefined) {
-        data['group'] = group;
+        data.group = group;
       }
       if (features_slug !== undefined) {
-        data['features_slug'] = features_slug;
+        data.featuresSlug = features_slug;
+      }
+      if (address !== undefined) {
+        data.address = address;
       }
       return datasource.deviceByIDFindQuery(data).then(
         (result: any) => {
@@ -30,8 +43,11 @@ export const QueryDeviceID = ({ group, featuresSlug, query, setAlert, queryMode,
           if (features_slug !== undefined) {
             title += `\nfeatures_slug: ${features_slug}`;
           }
+          if (address !== undefined) {
+            title += `\naddress: ${address}`;
+          }
           let severity = 'error';
-          setAlert({ title: title, severity: severity });
+          setAlert((prev) => ({ title: title, severity: severity }));
           throw new Error(response.statusText);
         }
       );
@@ -39,8 +55,8 @@ export const QueryDeviceID = ({ group, featuresSlug, query, setAlert, queryMode,
     [datasource]
   );
   const refreshDevice = React.useCallback(
-    (device_id: number, group?: number, features_slug?: number) => {
-      loadDevice(device_id, group, features_slug).then((result) => {
+    (device_id: number, group?: number, features_slug?: number, address?: number) => {
+      loadDevice(device_id, group, features_slug, address).then((result) => {
         if (result?.id === undefined) {
           let title = `Device:\nUnknown device with:`;
           title += `\nid: ${device_id}`;
@@ -50,11 +66,14 @@ export const QueryDeviceID = ({ group, featuresSlug, query, setAlert, queryMode,
           if (features_slug !== undefined) {
             title += `\nfeatures_slug: ${features_slug}`;
           }
+          if (address !== undefined) {
+            title += `\naddress: ${address}`;
+          }
           let severity = 'warning';
-          setAlert({ title: title, severity: severity });
+          setAlert((prev) => ({ title: title, severity: severity }));
           return;
         }
-        setDevice(result);
+        setDevice((prev) => result);
       });
     },
     [loadDevice]
@@ -63,15 +82,15 @@ export const QueryDeviceID = ({ group, featuresSlug, query, setAlert, queryMode,
     if (deviceID === null || queryMode.value !== Format.DeviceID) {
       return;
     }
-    refreshDevice(deviceID, group?.value, featuresSlug?.value);
-  }, [refreshDevice, deviceID, group, featuresSlug]);
+    refreshDevice(deviceID, group?.value, featuresSlug?.value, address?.value);
+  }, [refreshDevice, deviceID, group, featuresSlug, address]);
 
   React.useEffect(() => {
     if (device?.id === undefined || device?.id === deviceID) {
       return;
     }
-    setDeviceID(device.id);
-    setDeviceIDInput(device.id);
+    setDeviceID((prev) => device.id);
+    setDeviceIDInput((prev) => device.id);
   }, [device]);
 
   if (queryMode.value !== Format.DeviceID) {
@@ -83,7 +102,7 @@ export const QueryDeviceID = ({ group, featuresSlug, query, setAlert, queryMode,
         value={deviceIDInput ?? ''}
         onBlur={() => {
           if (deviceIDInput !== null) {
-            setDeviceID(deviceIDInput);
+            setDeviceID((prev) => deviceIDInput);
           }
         }}
         onChange={(v) => {
@@ -91,9 +110,9 @@ export const QueryDeviceID = ({ group, featuresSlug, query, setAlert, queryMode,
           let value = v.target.value;
           value = value.replace(/\D/g, '');
           if (value === '') {
-            setDeviceIDInput(null);
+            setDeviceIDInput((prev) => null);
           } else {
-            setDeviceIDInput(parseInt(value, 10));
+            setDeviceIDInput((prev) => parseInt(value, 10));
           }
         }}
         prefix={'Device ID:'}

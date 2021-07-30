@@ -4,7 +4,8 @@
     "type": "datasource",
     "annotations": false,
     "metrics": true,
-    "logs": true,
+    "alerting": false,
+    "logs": false,
     "info": {
         "author": {
             "name": "Šimon Podlipský, IT Yaroslavl"

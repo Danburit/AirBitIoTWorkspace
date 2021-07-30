@@ -4,7 +4,17 @@ import { SelectableValue } from '@grafana/data';
 import { Select } from '@grafana/ui';
 import { find } from 'lodash';
 
-export const Metric = ({ setAlert, datasource, device, subDevice, metrics, setMetrics, query }) => {
+export const Metric = ({
+  setAlert,
+  converter,
+  datasource,
+  conv_SubDev,
+  device,
+  subDevice,
+  metrics,
+  setMetrics,
+  query,
+}) => {
   const [metricOptionsIsLoading, setMetricOptionsIsLoading] = React.useState<boolean>(false);
   const [metricIsClearable, setMetricIsClearable] = React.useState<boolean>(false);
   const [deviceMetricOptions, setDeviceMetricOptions] = React.useState<Array<SelectableValue<string>>>([]);
@@ -25,19 +35,23 @@ export const Metric = ({ setAlert, datasource, device, subDevice, metrics, setMe
   };
 
   const loadDeviceMetricOptions = React.useCallback(
-    (device_id: number) => {
-      let data: { device_id: number } = { device_id: device_id };
+    (device_id: number, converter_id?: number) => {
+      let data: { device_id: number; converter?: number } = { device_id: device_id };
+      if (converter_id) {
+        data.converter = converter_id;
+      }
       return datasource.deviceMetricFindValue(data).then(
         (result: MetricFindValue1[]) => {
           let metrics = result.map((value: MetricFindValue1) => ({ label: value.text, value: value.value }));
-          setMetrics(getArrCurMetr(metrics, query?.metrics));
+          setMetrics((prev) => getArrCurMetr(metrics, query?.metrics));
           return metrics;
         },
         (response: any) => {
           let title = `Device metrics loading error:\n${response.status} - ${response.statusText}`;
           title += `\ndevice_id: ${device_id}`;
+          title += `\nconverter_id: ${converter_id}`;
           let severity = 'error';
-          setAlert({ title: title, severity: severity });
+          setAlert((prev) => ({ title: title, severity: severity }));
           throw new Error(response.statusText);
         }
       );
@@ -45,25 +59,25 @@ export const Metric = ({ setAlert, datasource, device, subDevice, metrics, setMe
     [datasource]
   );
   const refreshDeviceMetricOptions = React.useCallback(
-    (device_id: number) => {
-      setMetricOptionsIsLoading(true);
-      loadDeviceMetricOptions(device_id)
+    (device_id: number, converter_id?: number) => {
+      setMetricOptionsIsLoading((prev) => true);
+      loadDeviceMetricOptions(device_id, converter_id)
         .then((result) => {
-          setDeviceMetricOptions(result);
+          setDeviceMetricOptions((prev) => result);
         })
         .finally(() => {
-          setMetricOptionsIsLoading(false);
+          setMetricOptionsIsLoading((prev) => false);
         });
     },
     [loadDeviceMetricOptions, setDeviceMetricOptions]
   );
   React.useEffect(() => {
-    if (device?.id === undefined) {
-      return;
+    if (device?.id !== undefined && converter?.value !== undefined) {
+      refreshDeviceMetricOptions(device.id, converter.value);
     }
-    refreshDeviceMetricOptions(device.id);
-  }, [refreshDeviceMetricOptions, device]);
+  }, [refreshDeviceMetricOptions, converter]);
 
+  // React.useEffect(() => {}, [refreshDeviceMetricOptions]);
   const loadSubDeviceMetricOptions = React.useCallback(
     (device_id: number, subdevice_id: number) => {
       let data: { device_id: number; sub_device_id: number } = {
@@ -73,7 +87,7 @@ export const Metric = ({ setAlert, datasource, device, subDevice, metrics, setMe
       return datasource.subDeviceMetricFindValue(data).then(
         (result: MetricFindValue1[]) => {
           let metrics = result.map((value: MetricFindValue1) => ({ label: value.text, value: value.value }));
-          setMetrics(getArrCurMetr(metrics, query?.metrics));
+          setMetrics((prev) => getArrCurMetr(metrics, query?.metrics));
           return metrics;
         },
         (response: any) => {
@@ -81,7 +95,7 @@ export const Metric = ({ setAlert, datasource, device, subDevice, metrics, setMe
           title += `\ndevice_id: ${device_id}`;
           title += `\nsubdevice_id:${subdevice_id}`;
           let severity = 'error';
-          setAlert({ title: title, severity: severity });
+          setAlert((prev) => ({ title: title, severity: severity }));
           throw new Error(response.statusText);
         }
       );
@@ -90,13 +104,13 @@ export const Metric = ({ setAlert, datasource, device, subDevice, metrics, setMe
   );
   const refreshSubDeviceMetricOptions = React.useCallback(
     (device_id: number, subdevice_id: number) => {
-      setMetricOptionsIsLoading(true);
+      setMetricOptionsIsLoading((prev) => true);
       loadSubDeviceMetricOptions(device_id, subdevice_id)
         .then((result) => {
-          setSubDeviceMetricOptions(result);
+          setSubDeviceMetricOptions((prev) => result);
         })
         .finally(() => {
-          setMetricOptionsIsLoading(false);
+          setMetricOptionsIsLoading((prev) => false);
         });
     },
     [loadSubDeviceMetricOptions, setSubDeviceMetricOptions, setMetricOptionsIsLoading]
@@ -107,7 +121,7 @@ export const Metric = ({ setAlert, datasource, device, subDevice, metrics, setMe
     }
     refreshSubDeviceMetricOptions(device.id, subDevice.value);
   }, [refreshSubDeviceMetricOptions, subDevice]);
-  if (device === null) {
+  if (device === null || conv_SubDev === -1) {
     return null;
   }
   return (
@@ -119,11 +133,11 @@ export const Metric = ({ setAlert, datasource, device, subDevice, metrics, setMe
         options={subDevice?.value !== undefined ? subDeviceMetricOptions : deviceMetricOptions}
         onChange={(v) => {
           if (v === null) {
-            setMetrics([]);
-            setMetricIsClearable(false);
+            setMetrics((prev) => []);
+            setMetricIsClearable((prev) => false);
           } else {
-            setMetrics(v);
-            setMetricIsClearable(true);
+            setMetrics((prev) => v);
+            setMetricIsClearable((prev) => true);
           }
         }}
         isMulti={true}

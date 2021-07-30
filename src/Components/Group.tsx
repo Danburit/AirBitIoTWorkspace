@@ -2,8 +2,8 @@ import React from 'react';
 import { SelectableValue } from '@grafana/data';
 import { Select } from '@grafana/ui';
 import { EmptySelectableValue } from '../constance';
-import { SubDeviceFindValue } from '../types';
 import { find } from 'lodash';
+
 export const Group = ({ setAlert, datasource, group, setGroup, query }) => {
   const [groupOptions, setGroupOptions] = React.useState<Array<SelectableValue<number>>>([]);
   const [groupOptionsIsLoading, setGroupOptionsIsLoading] = React.useState<boolean>(false);
@@ -14,26 +14,26 @@ export const Group = ({ setAlert, datasource, group, setGroup, query }) => {
       (result: any) => {
         let r = result.map((value: any) => ({ label: value.text, value: value.value }));
         let f = find(r, (v) => v.value === query?.lastQuery?.group?.value) ?? EmptySelectableValue;
-        setGroupIsClearable(f !== EmptySelectableValue);
-        setGroup(f);
+        setGroupIsClearable((prev) => f !== EmptySelectableValue);
+        setGroup((prev) => f);
         return r;
       },
       (response: any) => {
         let title = `GroupOptions loading error:\n${response.status} - ${response.statusText}`;
         let severity = 'error';
-        setAlert({ title: title, severity: severity });
+        setAlert((prev) => ({ title: title, severity: severity }));
         throw new Error(response.statusText);
       }
     );
   }, [datasource]);
   const refreshGroupOptions = React.useCallback(() => {
-    setGroupOptionsIsLoading(true);
+    setGroupOptionsIsLoading((prev) => true);
     loadGroupOptions()
       .then((result) => {
-        setGroupOptions(result);
+        setGroupOptions((prev) => result);
       })
       .finally(() => {
-        setGroupOptionsIsLoading(false);
+        setGroupOptionsIsLoading((prev) => false);
       });
   }, [loadGroupOptions, setGroupOptionsIsLoading, setGroupOptions]);
   React.useEffect(() => {
@@ -51,11 +51,11 @@ export const Group = ({ setAlert, datasource, group, setGroup, query }) => {
         value={group}
         onChange={(v) => {
           if (v === null) {
-            setGroupIsClearable(false);
-            setGroup(EmptySelectableValue);
+            setGroupIsClearable((prev) => false);
+            setGroup((prev) => EmptySelectableValue);
           } else {
-            setGroupIsClearable(true);
-            setGroup(v);
+            setGroupIsClearable((prev) => true);
+            setGroup((prev) => v);
           }
         }}
       />

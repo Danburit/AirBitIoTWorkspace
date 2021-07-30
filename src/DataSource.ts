@@ -10,10 +10,12 @@ import {
   GroupFindValue,
   MetricFindValue1,
   QueryRequest,
+  ConverterFindValue,
   SubDeviceFindValue,
   TypeNetIDValue,
   UserCheckValue,
   DeviceFindValue,
+  AddressFindValue,
 } from './types';
 
 export class DataSource extends DataSourceApi<GrafanaQuery, GenericOptions> {
@@ -125,6 +127,14 @@ export class DataSource extends DataSourceApi<GrafanaQuery, GenericOptions> {
     }).then(this.mapToTextValue);
   }
 
+  converterFindQuery(data: any): Promise<ConverterFindValue[]> {
+    return this.doRequest({
+      url: `${this.url}/lists/converters/`,
+      data: data,
+      method: 'POST',
+    }).then(this.mapToTextValue);
+  }
+
   groupFindQuery(): Promise<GroupFindValue[]> {
     return this.doRequest({
       url: `${this.url}/lists/groups/`,
@@ -157,6 +167,14 @@ export class DataSource extends DataSourceApi<GrafanaQuery, GenericOptions> {
   companyByNameFindQuery(data: any): Promise<CompanyFindValue[]> {
     return this.doRequest({
       url: `${this.url}/companies/by_name/`,
+      data: data,
+      method: 'POST',
+    }).then(this.mapToTextValue);
+  }
+
+  addressByNameFindQuery(data: any): Promise<AddressFindValue[]> {
+    return this.doRequest({
+      url: `${this.url}/lists/addresses/`,
       data: data,
       method: 'POST',
     }).then(this.mapToTextValue);

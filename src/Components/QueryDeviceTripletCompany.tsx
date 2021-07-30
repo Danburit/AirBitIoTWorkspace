@@ -1,7 +1,7 @@
 import { CompanyFindValue } from '../types';
 import React from 'react';
 import { SelectableValue } from '@grafana/data';
-import { InlineField, Select } from '@grafana/ui';
+import { Select } from '@grafana/ui';
 import { Format } from '../format';
 import { EmptySelectableValue } from '../constance';
 
@@ -34,7 +34,7 @@ export const QueryDeviceTripletCompany = ({
           let title = `CompanyOptions loading error:\n${response.status} - ${response.statusText}`;
           title += `\ncompany_name: ${company_name}`;
           let severity = 'error';
-          setAlert({ title: title, severity: severity });
+          setAlert((prev) => ({ title: title, severity: severity }));
           throw new Error(response.statusText);
         }
       );
@@ -43,13 +43,13 @@ export const QueryDeviceTripletCompany = ({
   );
   const refreshCompanyOptions = React.useCallback(
     (company_name: string) => {
-      setCompanyOptionsIsLoading(true);
+      setCompanyOptionsIsLoading((prev) => true);
       loadCompanyOptions(company_name)
         .then((options: any) => {
-          setCompanyOptions(options);
+          setCompanyOptions((prev) => options);
         })
         .finally(() => {
-          setCompanyOptionsIsLoading(false);
+          setCompanyOptionsIsLoading((prev) => false);
         });
     },
     [loadCompanyOptions]
@@ -74,7 +74,7 @@ export const QueryDeviceTripletCompany = ({
           let title = `CompanyByID loading error:\n${response.status} - ${response.statusText}`;
           title += `\ncompany_id: ${company_id}`;
           let severity = 'error';
-          setAlert({ title: title, severity: severity });
+          setAlert((prev) => ({ title: title, severity: severity }));
           throw new Error(response.statusText);
         }
       );
@@ -83,16 +83,16 @@ export const QueryDeviceTripletCompany = ({
   );
   const refreshCompany = React.useCallback(
     (company_id: number) => {
-      setCompanyOptionsIsLoading(true);
+      setCompanyOptionsIsLoading((prev) => true);
       loadCompany(company_id)
         .then((result) => {
-          setCompanyOptions(result);
+          setCompanyOptions((prev) => result);
           if (result.length) {
-            setCompany(result[0]);
+            setCompany((prev) => result[0]);
           }
         })
         .finally(() => {
-          setCompanyOptionsIsLoading(false);
+          setCompanyOptionsIsLoading((prev) => false);
         });
     },
     [loadCompany]
@@ -102,10 +102,10 @@ export const QueryDeviceTripletCompany = ({
       return;
     }
     if (device.company_id === null) {
-      setCompanyIsClearable(false);
-      setCompany(EmptySelectableValue);
+      setCompanyIsClearable((prev) => false);
+      setCompany((prev) => EmptySelectableValue);
     } else {
-      setCompanyIsClearable(true);
+      setCompanyIsClearable((prev) => true);
       refreshCompany(device.company_id);
     }
   }, [refreshCompany, device]);
@@ -123,15 +123,15 @@ export const QueryDeviceTripletCompany = ({
           options={companyOptions}
           onChange={(e) => {
             if (e === null) {
-              setCompanyIsClearable(false);
-              setCompany(EmptySelectableValue);
+              setCompanyIsClearable((prev) => false);
+              setCompany((prev) => EmptySelectableValue);
             } else {
-              setCompanyIsClearable(true);
-              setCompany(e);
+              setCompanyIsClearable((prev) => true);
+              setCompany((prev) => e);
             }
           }}
           onInputChange={(v) => {
-            setCompanyQr(v);
+            setCompanyQr((prev) => v);
           }}
         />
       </div>

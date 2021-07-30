@@ -11,7 +11,7 @@ export const QueryMode = ({ queryMode, setQueryMode }) => {
         options={queryModeOptions}
         defaultValue={queryMode}
         onChange={(v) => {
-          setQueryMode(v);
+          setQueryMode((prev) => v);
         }}
       />
     </div>
